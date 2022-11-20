@@ -1,0 +1,101 @@
+body {
+	background-color: lightgray;
+	font-family: Century Gothic, sans-serif;
+}
+
+table, th, td {
+	margin-top: 10%;
+	text-align: center;
+	border-collapse: collapse;
+	border-top: 1px solid lightgray;
+	border-bottom: 1px solid lightgray;
+	font-size: 14px;
+}
+
+th {
+	width: 25%;
+	height: 30px;
+	color: lightgray;
+}
+
+input[type=text] {
+	height: 20px;
+	margin-bottom: 15px;
+}
+
+input[type=number] {
+	height: 20px;
+	margin-bottom: 15px;
+}
+
+input[type=submit], input[type=submit]:hover {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 30px;
+	padding-right: 30px;
+	font-family: Century Gothic, sans-serif;
+	cursor: pointer;
+	margin-bottom: 10px;
+
+}
+
+input[type=button], input[type=button]:hover {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 30px;
+	padding-right: 30px;
+	font-family: Century Gothic, sans-serif;
+	cursor: pointer;
+}
+
+label {
+font-size: 14px;
+}
+
+#contentdiv {
+	height: auto;
+	max-height: 65%;
+	width: auto;
+	margin: 0;
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	transform: translate(-50%, -50%);
+	background-color: white;
+	padding: 30px;
+	padding-left: 50px;
+	padding-right: 50px;
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+	box-shadow: 5px 5px 5px gray;
+
+}
+
+#divright {
+	width: 500px;
+	height: auto;
+	overflow-y: auto;
+	margin-left: 50px;
+}
+
+.container {
+	position: relative;
+	width: 45%;
+	height: 100%;
+	float: left;
+	justify-content: center;
+	
+}
+
+.form {
+	width: 100%;
+	display: flex;
+    flex-direction: column;
+    padding-bottom: 30px;
+}
+
+.submit {
+	text-align: center;
+	padding-top: 5%;
+}
