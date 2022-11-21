@@ -24,23 +24,38 @@
                 <!-- Modal/Popup Box LWC body starts here -->
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
 
-                    <lightning-record-edit-form 
-                        object-api-name="Discount_Program__c">
+                    <lightning-record-edit-form object-api-name="Discount_Program__c">
+
                         <div class="slds-grid">
-                            <div class="slds-col slds-order_2 slds-large-order_1">
-                                <lightning-input-field field-name="Fleet__c"> </lightning-input-field>
-                                <lightning-input-field field-name="Opportunity__c"> </lightning-input-field>
+                            <div class="slds-col">
+                                <lightning-input-field field-name="Fleet__c" onchange={handleSelectedFleet}>
+                                </lightning-input-field>
+                                <lightning-input-field field-name="Discount_Type__c" data-id="discountType">
+                                </lightning-input-field>
                             </div>
-                            <div class="slds-col slds-order_1 slds-large-order_2">
-                                <lightning-input-field field-name="Discount_Type__c"> </lightning-input-field>
-                                <lightning-input-field field-name="Discount__c"> </lightning-input-field> 
+                            <div class="slds-col">
+                                <lightning-input-field field-name="Account__c" value={opptyRecords.Account} disabled>
+                                </lightning-input-field>
+                                <lightning-input-field field-name="Discount__c" data-id="discount">
+                                </lightning-input-field>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-input-field field-name="Opportunity__c" value={recordId} disabled>
+                                </lightning-input-field>
                             </div>
                         </div>
-                        
-                               
+
                     </lightning-record-edit-form>
 
-
+                    <div style="height: 300px;">
+                        <lightning-datatable 
+                        data={stationData} 
+                        columns={stationColumns} 
+                        key-field="id" 
+                        onrowselection={getSelectedName}>
+                    </lightning-datatable>
+                    </div>
+                    
 
                 </div>
                 <!-- Modal/Popup Box LWC footer starts here -->
