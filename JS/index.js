@@ -88,6 +88,7 @@ function createTableRowElement(content) {
     return td;
 }
 
+
 async function getProducts() {
     const res = await fetch('https://bootcamp-mock-api.vercel.app/getProducts');
     const data = await res.json();
@@ -121,7 +122,9 @@ try{
     }, 1000);
 }catch(err) {
     console.error(err);
-}
+} 
+
+
 
 
 
