@@ -20,6 +20,17 @@ public with sharing class discountController {
         }
     }
 
+    /*
+    @AuraEnabled
+    public static string getStageName(id oppId){
+        try {
+            return [SELECT id, Stage FROM Opportunity WHERE id =: oppId].Stage;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+    */
+
     
 
     @AuraEnabled

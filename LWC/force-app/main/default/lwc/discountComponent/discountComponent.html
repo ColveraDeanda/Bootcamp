@@ -2,7 +2,7 @@
 
     <!-- lightning button for open modal window -->
     <lightning-button variant="brand" label="New Discount Program" title="New Discount Program" onclick={openModal}
-        class="slds-m-left_x-small">
+        class="slds-m-left_x-small" disabled={isCloseWon}>
     </lightning-button>
     <!--Use template if:true to display/hide popup based on isModalOpen value-->
     <template if:true={isModalOpen}>
