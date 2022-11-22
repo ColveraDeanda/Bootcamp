@@ -11,6 +11,18 @@ public with sharing class discountController {
     }
 
     @AuraEnabled
+    public static Station_Discount__c stationDiscountInsert(Station_Discount__c stationDiscount){
+        try {
+            insert stationDiscount;
+            return stationDiscount;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    
+
+    @AuraEnabled
     public static List<Station__c> getStationsByState(String state){
         try {
             return [SELECT Id, Station_Number__c, Name, State__c, Zip_Code__c FROM Station__c WHERE State__c = :state ORDER BY State__c];
