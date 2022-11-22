@@ -24,7 +24,9 @@
                 <!-- Modal/Popup Box LWC body starts here -->
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
 
-                    <lightning-record-edit-form object-api-name="Discount_Program__c">
+                    <lightning-record-edit-form 
+                        object-api-name="Discount_Program__c"
+                        onsuccess={handleSuccess}>
 
                         <div class="slds-grid">
                             <div class="slds-col">
@@ -34,7 +36,7 @@
                                 </lightning-input-field>
                             </div>
                             <div class="slds-col">
-                                <lightning-input-field field-name="Account__c" value={opptyRecords.Account} disabled>
+                                <lightning-input-field field-name="Account__c" value={accountFleet} disabled>
                                 </lightning-input-field>
                                 <lightning-input-field field-name="Discount__c" data-id="discount">
                                 </lightning-input-field>
@@ -44,24 +46,39 @@
                                 </lightning-input-field>
                             </div>
                         </div>
+                        
+                        <div class="slds-m-around_small">
+                            <div style="height: 225px;">
+                                <lightning-datatable 
+                                data={stationData} 
+                                columns={stationColumns} 
+                                key-field="id" 
+                                onrowselection={handleRowSelection}>
+                            </lightning-datatable>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="slds-align_absolute-center">
+                                <lightning-button label="Save" class="slds-p-right_small" variant="brand" onclick={getSelectedRec} type="submit"></lightning-button>
+                                <button class="slds-button slds-button_neutral slds-p-left_small" onclick={closeModal} title="Cancel">Cancel</button>
+                        </div>
+                        
 
                     </lightning-record-edit-form>
 
-                    <div style="height: 300px;">
-                        <lightning-datatable 
-                        data={stationData} 
-                        columns={stationColumns} 
-                        key-field="id" 
-                        onrowselection={getSelectedName}>
-                    </lightning-datatable>
-                    </div>
+                    
                     
 
                 </div>
                 <!-- Modal/Popup Box LWC footer starts here -->
-                <footer class="slds-modal__footer">
-                    <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                <footer class="">
+                    <!--
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
                     <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">Save</button>
+                    -->
+                    
                 </footer>
             </div>
         </section>
