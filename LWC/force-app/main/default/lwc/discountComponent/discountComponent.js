@@ -3,7 +3,7 @@ import { getRecord } from 'lightning/uiRecordApi';
 import getStations from '@salesforce/apex/discountController.getAllStations';
 import getAccountFleet from '@salesforce/apex/discountController.getAccountFleet';
 import stationDiscountInsert from '@salesforce/apex/discountController.stationDiscountInsert';
-import getStationsByState from '@salesforce/apex/discountController.getStationsByState';
+import getStationName from '@salesforce/apex/discountController.getStationName';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const RECORD_FIELDS_OPPTY = [
@@ -12,16 +12,20 @@ const RECORD_FIELDS_OPPTY = [
     'Opportunity.StageName'
 ];
 
+const RECORD_FIELDS_STATION = [
+    'Station__c.Name'
+];
+
 const RECORD_FIELDS_FLEET = [
     'Fleet__c.State__c',
     'Fleet__c.National_Fleet__c'
 ]
 
 const STATION_TABLE_COLUMNS = [
-    {label: 'Station Number', fieldName: 'Station_Number__c'},
-    {label: 'Station Name', fieldName: 'Name'},
-    {label: 'State', fieldName: 'State__c'},
-    {label: 'Zip Code', fieldName: 'Zip_Code__c'}
+    { label: 'Station Number', fieldName: 'Station_Number__c' },
+    { label: 'Station Name', fieldName: 'Name' },
+    { label: 'State', fieldName: 'State__c' },
+    { label: 'Zip Code', fieldName: 'Zip_Code__c' }
 ]
 
 export default class DiscountComponent extends LightningElement {
@@ -34,7 +38,7 @@ export default class DiscountComponent extends LightningElement {
 
     @api recordId; // Opportunity
     @track isModalOpen = false;
-    opptyRecords = {'sobjectType': 'Opportunity'}; // Objeto de tipo Opportunity.
+    opptyRecords = { 'sobjectType': 'Opportunity' }; // Objeto de tipo Opportunity.
     stationData; // Station Records
     stationColumns = STATION_TABLE_COLUMNS;
     selectedFleetId;
@@ -42,48 +46,44 @@ export default class DiscountComponent extends LightningElement {
     @track accountFleet; // Account related to Fleet.
     stationsSelected = [];
     isCloseWon = false;
+    stationsIds = [];
+    stationNames = [];
 
 
-    connectedCallback() {
-        console.log(this.recordId);
-    }
-
-    @wire(getRecord, {recordId: '$recordId', fields: RECORD_FIELDS_OPPTY})
-    getOpptyRecordFields({data, error}) {
-        if(data) {
+    @wire(getRecord, { recordId: '$recordId', fields: RECORD_FIELDS_OPPTY })
+    getOpptyRecordFields({ data, error }) {
+        if (data) {
             this.opptyRecords.Name = data.fields.Name.value;
-            // this.opptyRecords.Account = data.fields.Account.value.__ref.split(':')[3];
             this.opptyRecords.OwnerId = data.fields.OwnerId.value;
             this.opptyRecords.Stage = data.fields.StageName.value;
-            if(this.opptyRecords.Stage == "Closed Won") {
+            if (this.opptyRecords.Stage == "Closed Won") {
                 this.isCloseWon = true;
             } else {
                 this.isCloseWon = false;
             }
             error = undefined;
-        } else if(error) {
+        } else if (error) {
             data = undefined;
         }
     }
 
-    
-    @wire(getStations, {})
-        wiredStations({data, error}) {
-            if(data) {
-                this.tempStations = data;
-                error = undefined
-            } else if(error) {
-                data = undefined;
-            }
-        }
-        
 
-    
-    @wire(getRecord, {recordId: '$selectedFleetId', fields: RECORD_FIELDS_FLEET})
-    wiredFleet({data, error}) {
-        if(data) {
-            console.log(data);
-            if(data.fields.National_Fleet__c.value) {
+    @wire(getStations, {})
+    wiredStations({ data, error }) {
+        if (data) {
+            this.tempStations = data;
+            error = undefined
+        } else if (error) {
+            data = undefined;
+        }
+    }
+
+
+
+    @wire(getRecord, { recordId: '$selectedFleetId', fields: RECORD_FIELDS_FLEET })
+    wiredFleet({ data, error }) {
+        if (data) {
+            if (data.fields.National_Fleet__c.value) {
                 this.stationData = this.tempStations;
             } else {
                 const state = data.fields.State__c.value;
@@ -91,97 +91,102 @@ export default class DiscountComponent extends LightningElement {
                 let lstStations = [];
 
                 stations.forEach(element => {
-                    if(element.State__c === state) {
+                    if (element.State__c === state) {
                         lstStations.push(element);
                     }
                 });
                 this.stationData = lstStations;
             }
-            
+
             error = undefined
-        } else if(error) {
-            console.log(error);
+        } else if (error) {
             data = undefined;
         }
     }
-    
 
-    
-    
+
+
+
     handleSelectedFleet(event) {
-        console.log('aqui');
         this.selectedFleetId = event.detail.value[0];
-        if(this.selectedFleetId) {
+        if (this.selectedFleetId) {
             getAccountFleet({ fleetId: this.selectedFleetId })
-            .then(res =>  {
-                this.accountFleet = res[0].Account__c;
-            })
-            .catch(error => {
-                console.log(error);
-            })
+                .then(res => {
+                    this.accountFleet = res[0].Account__c;
+                })
+                .catch(error => {
+                })
         } else {
             this.stationData = undefined;
-        } 
-        
+        }
+
     }
 
     handleSuccess(event) {
         let stationsSelectedArr = this.stationsSelected.split(',');
         stationsSelectedArr.forEach(stationId => {
-            let stationDiscountObj = {
+            var stationDiscountObj = {
                 'Opportunity__c': this.recordId,
                 'Station__c': stationId,
                 'Discount_Program__c': event.detail.id
             }
-            stationDiscountInsert({ stationDiscount:  stationDiscountObj})
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => {
-                console.log(err);
-            });
+            this.stationsIds.push(stationId);
+            stationDiscountInsert({ stationDiscount: stationDiscountObj })
+                .then(res => {
+                })
+                .catch(err => {
+                });
         })
 
-            console.log('Discount Program ID: ', event.detail.id);
-            let stationMsj = '';
-            stationsSelectedArr.length == 1 ? stationMsj = 'station' :  'stations';
+        this.stationsIds.forEach(station => {
+            getStationName({ stationId: station })
+                .then(res => {
+                    this.stationNames.push(res);
+                })
+                .catch(err => {
+                })
+
+        })
+
+        setTimeout(() => {
+            let stationNameString = this.stationNames.join(',');
+            let stationsFormat = stationNameString.slice(0, stationNameString.length - 1);
+            // Info Message
             this.dispatchEvent(new ShowToastEvent({
-                title: 'Success',
-                message: `New discount program has been created successfully with ${stationsSelectedArr.length} ${stationMsj} related to it.`,
-                variant: 'success'
+                title: 'Station Details',
+                message: `${stationsFormat} added successfully to New Discount Program`,
+                variant: 'info',
+                mode: 'sticky'
             }));
-            this.closeModal();
-        
-            
-       
-    }
+        }, 500);
 
-    handleRowSelection(event) {
-        let selectedRowsDetail = event.detail.selectedRows;
-        let selectedIdsArray = [];
 
-        for (const element of selectedRowsDetail) {
-            //console.log('elementid', element.Id);
-            selectedIdsArray.push(element.Id);
-        }
 
-        console.log(JSON.parse(JSON.stringify(selectedIdsArray)));
+        // Success Message
+        let stationMsj = '';
+        stationsSelectedArr.length == 1 ? stationMsj = 'station' : stationMsj = 'stations';
+        this.dispatchEvent(new ShowToastEvent({
+            title: 'Success',
+            message: `New discount program has been created successfully with ${stationsSelectedArr.length} ${stationMsj} related to it.`,
+            variant: 'success'
+        }));
+        this.closeModal();
+
+
+
     }
 
     getSelectedRec() {
-        var selectedRecords =  this.template.querySelector("lightning-datatable").getSelectedRows();
-      if(selectedRecords.length > 0){
-          console.log('selectedRecords are ', selectedRecords);
- 
-          let ids = '';
-          selectedRecords.forEach(currentItem => {
-              ids = ids + ',' + currentItem.Id;
-          });
-          this.selectedIds = ids.replace(/^,/, '');
-          this.lstSelectedRecords = selectedRecords;
-          this.stationsSelected = this.selectedIds;
-          console.log('StationsSelected:', this.stationsSelected);
-      }  
+        var selectedRecords = this.template.querySelector("lightning-datatable").getSelectedRows();
+        if (selectedRecords.length > 0) {
+            let ids = '';
+            selectedRecords.forEach(currentItem => {
+                ids = ids + ',' + currentItem.Id;
+            });
+            this.selectedIds = ids.replace(/^,/, '');
+            this.lstSelectedRecords = selectedRecords;
+            this.stationsSelected = this.selectedIds;
+        }
     }
 
     openModal() {
@@ -190,6 +195,12 @@ export default class DiscountComponent extends LightningElement {
     closeModal() {
         this.isModalOpen = false;
         this.accountFleet = undefined;
+    }
+
+    consoleArrProxy(arr) {
+        arr.forEach(elem => {
+            console.log(elem);
+        })
     }
 
 }

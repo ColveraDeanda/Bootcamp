@@ -20,19 +20,6 @@ public with sharing class discountController {
         }
     }
 
-    /*
-    @AuraEnabled
-    public static string getStageName(id oppId){
-        try {
-            return [SELECT id, Stage FROM Opportunity WHERE id =: oppId].Stage;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-    */
-
-    
-
     @AuraEnabled
     public static List<Station__c> getStationsByState(String state){
         try {
@@ -51,13 +38,14 @@ public with sharing class discountController {
         }
     }
 
-    /*
-    @AuraEnabled(cacheable=true)
-    public static List<JobApplication__c> getGeneralData(id hiredId) {
-        Id jobApplicationId = [Select id, JobApplication__c from Hired__c where Id = :hiredId].JobApplication__c;
-        List<JobApplication__c> candidateGeneralData = [SELECT Id, Name, Candidate__r.Names__c, Candidate__r.Surname__c, Candidate__r.Country__c, Candidate__r.City__c, Candidate__r.Requires_Visa__c FROM JobApplication__c Where Id = :jobApplicationId];
-        return candidateGeneralData;
+    @AuraEnabled
+    public static String getStationName(id stationId){
+        try {
+            return [SELECT Id, Name FROM Station__c WHERE id =: stationId].Name;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
     }
-    */
+
 
 }
