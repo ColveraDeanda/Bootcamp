@@ -1,0 +1,20 @@
+<template>
+
+    <template if:true={showDiscountDetails}>
+        <div class="slds-m-around_medium">
+            <lightning-card  title="Discount Program Details" icon-name="standard:product_item_transaction">
+                <div class="slds-m-around_medium">
+                    <lightning-tree-grid
+                    key-field="Id"
+                    columns={gridColumns}
+                    data={gridData}
+                    onrowselection={handleGridRowSelection}>
+                    </lightning-tree-grid>
+                </div>
+            </lightning-card>
+        </div>
+    </template>
+    
+    
+    
+</template>

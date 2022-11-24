@@ -151,10 +151,13 @@ export default class DiscountComponent extends LightningElement {
         setTimeout(() => {
             let stationNameString = this.stationNames.join(',');
             let stationsFormat = stationNameString.slice(0, stationNameString.length - 1);
+            this.stationsIds = [];
+            this.stationNames = [];
+
             // Info Message
             this.dispatchEvent(new ShowToastEvent({
                 title: 'Station Details',
-                message: `${stationsFormat} added successfully to New Discount Program`,
+                message: `Stations ${stationsFormat} added successfully to New Discount Program`,
                 variant: 'info',
                 mode: 'sticky'
             }));
